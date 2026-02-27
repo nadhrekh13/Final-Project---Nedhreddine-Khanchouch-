@@ -1,6 +1,6 @@
 # Task Management API
 
-A production-ready RESTful API for managing tasks, built with **FastAPI** and **Pydantic**.
+A production-ready RESTful API for managing tasks, built with **FastAPI** .
 
 ## Features
 
