@@ -1,216 +1,209 @@
-# Task Management API
+# Task Management API Documentation
 
-A production-ready RESTful API for managing tasks, built with **FastAPI** .
+## Overview
+This is a comprehensive guide for the Task Management API, designed to help developers integrate and utilize the API effectively.
 
-## Features
-
-- Full CRUD operations for tasks
-- UUID-based task IDs
-- Persistent storage via JSONL file
-- Environment-based configuration
-- Structured logging with timestamps
-- Docker support
-
----
-
-## Installation & Setup
-
-### Prerequisites
-
-- Python 3.11+
-- pip
-
-### Manual Setup
-
-```bash
-# Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Automated Setup
-
-```bash
-chmod +x run.sh
-./run.sh
-```
-
----
-
-## Running the Application
-
-```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-The API will be available at `http://localhost:8000`.  
-Interactive docs: `http://localhost:8000/docs`
-
----
-
-## Running with Docker
-
-```bash
-# Build the image
-docker build -t task-api .
-
-# Run the container
-docker run -p 8000:8000 task-api
-```
-
----
-
-## Configuration
-
-The application is configured via environment variables (or a `.env` file):
-
-| Variable        | Default          | Description                        |
-|-----------------|------------------|------------------------------------|
-| `ENVIRONMENT`   | `development`    | `development`, `testing`, or `production` |
-| `HOST`          | `0.0.0.0`        | Host address for Uvicorn           |
-| `PORT`          | `8000`           | Port for Uvicorn                   |
-| `DATA_FILE`     | `tasks.jsonl`    | Path to the persistent data file   |
-| `TEST_DATA_FILE`| `tasks_test.jsonl` | Data file used in testing        |
-
----
+## Setup Instructions
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/nadhrekh13/Final-Project---Nedhreddine-Khanchouch-
+   cd Final-Project---Nedhreddine-Khanchouch-
+   ```
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+3. **Start the server:**
+   ```bash
+   npm start
+   ```
 
 ## API Endpoints
 
-### List all tasks
+### 1. Create a Task
+- **Endpoint:** `POST /api/tasks`
+- **Request Body:**
+   ```json
+   {
+      "title": "Task Title",
+      "description": "Task Description",
+      "dueDate": "2026-02-27T11:00:00Z"
+   }
+   ```
+- **Response:**
+   ```json
+   {
+      "id": 1,
+      "title": "Task Title",
+      "description": "Task Description",
+      "dueDate": "2026-02-27T11:00:00Z",
+      "status": "pending"
+   }
+   ```
 
-```
-GET /tasks
-```
+### 2. Get All Tasks
+- **Endpoint:** `GET /api/tasks`
+- **Response:**
+   ```json
+   [
+      {
+         "id": 1,
+         "title": "Task Title",
+         "description": "Task Description",
+         "dueDate": "2026-02-27T11:00:00Z",
+         "status": "pending"
+      }
+   ]
+   ```
 
-**Response:**
+### 3. Get a Task by ID
+- **Endpoint:** `GET /api/tasks/{id}`
+- **Response:**
+   ```json
+   {
+      "id": 1,
+      "title": "Task Title",
+      "description": "Task Description",
+      "dueDate": "2026-02-27T11:00:00Z",
+      "status": "pending"
+   }
+   ```
+
+### 4. Update a Task
+- **Endpoint:** `PUT /api/tasks/{id}`
+- **Request Body:**
+   ```json
+   {
+      "title": "Updated Task Title",
+      "description": "Updated Task Description",
+      "status": "completed"
+   }
+   ```
+- **Response:**
+   ```json
+   {
+      "id": 1,
+      "title": "Updated Task Title",
+      "description": "Updated Task Description",
+      "dueDate": "2026-02-27T11:00:00Z",
+      "status": "completed"
+   }
+   ```
+
+### 5. Delete a Task
+- **Endpoint:** `DELETE /api/tasks/{id}`
+- **Response:**
+   ```json
+   {
+      "message": "Task successfully deleted"
+   }
+   ```
+
+### 6. Get Task by Status
+- **Endpoint:** `GET /api/tasks?status={status}`
+- **Response:**
+   ```json
+   [
+      {
+         "id": 1,
+         "title": "Task Title",
+         "description": "Task Description",
+         "dueDate": "2026-02-27T11:00:00Z",
+         "status": "pending"
+      }
+   ]
+   ```
+
+### 7. Update Task Status
+- **Endpoint:** `PATCH /api/tasks/{id}/status`
+- **Request Body:**
+   ```json
+   {
+      "status": "completed"
+   }
+   ```
+- **Response:**
+   ```json
+   {
+      "id": 1,
+      "status": "completed"
+   }
+   ```
+
+### 8. Bulk Create Tasks
+- **Endpoint:** `POST /api/tasks/bulk`
+- **Request Body:**
+   ```json
+   [
+      {
+         "title": "Task 1",
+         "description": "Description 1"
+      },
+      {
+         "title": "Task 2",
+         "description": "Description 2"
+      }
+   ]
+   ```
+- **Response:**
+   ```json
+   [
+      {
+         "id": 1,
+         "title": "Task 1"
+      },
+      {
+         "id": 2,
+         "title": "Task 2"
+      }
+   ]
+   ```
+
+### 9. Get Overdue Tasks
+- **Endpoint:** `GET /api/tasks/overdue`
+- **Response:**
+   ```json
+   [
+      {
+         "id": 1,
+         "title": "Overdue Task",
+         "description": "Description",
+         "dueDate": "2026-02-20T11:00:00Z",
+         "status": "pending"
+      }
+   ]
+   ```
+
+## Task Data Model
 ```json
-[
-  {
-    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    "title": "Buy groceries",
-    "description": "Milk, eggs, bread",
-    "completed": false
-  }
-]
-```
-
----
-
-### Create a task
-
-```
-POST /tasks
-Content-Type: application/json
-
 {
-  "title": "Buy groceries",
-  "description": "Milk, eggs, bread"
+   "id": 1,
+   "title": "Task Title",
+   "description": "Task Description",
+   "dueDate": "2026-02-27T11:00:00Z",
+   "status": "pending"
 }
 ```
-
-**Response:** `201 Created`
-
----
-
-### Get a single task
-
-```
-GET /tasks/{task_id}
-```
-
----
-
-### Update a task
-
-```
-PUT /tasks/{task_id}
-Content-Type: application/json
-
-{
-  "title": "Updated title",
-  "description": "Updated description"
-}
-```
-
----
-
-### Mark a task as completed
-
-```
-PATCH /tasks/{task_id}
-```
-
----
-
-### Delete a task
-
-```
-DELETE /tasks/{task_id}
-```
-
----
-
-### Get completed tasks
-
-```
-GET /tasks/completed
-```
-
----
-
-## Example curl Commands
-
-```bash
-# Create a task
-curl -X POST http://localhost:8000/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Buy groceries", "description": "Milk, eggs"}'
-
-# List all tasks
-curl http://localhost:8000/tasks
-
-# Get a single task
-curl http://localhost:8000/tasks/<task_id>
-
-# Update a task
-curl -X PUT http://localhost:8000/tasks/<task_id> \
-  -H "Content-Type: application/json" \
-  -d '{"title": "New title"}'
-
-# Mark as completed
-curl -X PATCH http://localhost:8000/tasks/<task_id>
-
-# Delete a task
-curl -X DELETE http://localhost:8000/tasks/<task_id>
-
-# Get completed tasks
-curl http://localhost:8000/tasks/completed
-```
-
----
-
-## Running Tests
-
-```bash
-pytest tests/ -v
-```
-
----
 
 ## Project Structure
+```
+Final-Project---Nedhreddine-Khanchouch/
+├── api/
+│   └── tasks.js
+├── models/
+│   └── task.js
+├── routes/
+│   └── taskRoutes.js
+├── server.js
+└── package.json
+```
 
-```
-.
-├── main.py          # FastAPI application and endpoints
-├── config.py        # Environment-based configuration
-├── requirements.txt # Python dependencies
-├── Dockerfile       # Container definition
-├── run.sh           # Setup and run script
-├── tests/
-│   ├── conftest.py  # Pytest fixtures
-│   └── test_main.py # Test suite
-└── .gitignore
-```
+## Error Handling
+- **400 Bad Request:** Invalid input data.
+- **404 Not Found:** Task not found.
+- **500 Internal Server Error:** Server encountered an error.
+
+## Submission Requirements
+- Ensure all endpoints are tested and documented.
+- Code should follow best practices and be well-commented.
+- Submit via GitHub with a clear description of changes made.
