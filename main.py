@@ -141,4 +141,3 @@ def delete_task(task_id: str):
             return {"message": "Task deleted successfully", "task": deleted_task}
     logger.warning("Task %s not found", task_id)
     raise HTTPException(status_code=404, detail=f"Task with id '{task_id}' not found")
-
